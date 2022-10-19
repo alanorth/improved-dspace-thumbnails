@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Improving DSpace PDF Thumbnails" />
+    <meta property="og:description" content="Improving DSpace PDF Thumbnail Quality with the ImageMagick Unsharp Mask Filter." />
+    <meta property="og:type" content="website" />
+
+    <link rel="stylesheet" href="css/sakura.css" type="text/css">
+    <link rel="stylesheet" href="css/image-compare-viewer.min.css" type="text/css">
+
+    <style>
+      .image-compare {
+        width: 400px;
+        margin: auto auto;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Improving DSpace PDF Thumbnails</h1>
+    <p>DSpace has supported using ImageMagick to generate thumbnails for PDFs <a href="https://wiki.lyrasis.org/display/DSDOC5x/Release+Notes">since version 5.0</a>. It is possible to increase the thumbnail resolution<a href="#footnote1">¹</a>, but these thumbnails are generally still a bit blurry due to a side effect of the resize operation.</p>
+
+    <p>In my experience the thumbnail quality can be improved by increasing the resolution and applying an <em><a href="https://imagemagick.org/Usage/blur/#unsharp">unsharp mask</a></em> filter after resizing the image. Contrary to the filter's name, this minor change has the effect of <em>sharpening</em> the resulting image, which is especially noticeable if the image contains text.</p>
+
+    <p>I propose adding the <code>-unsharp 0.5</code> parameter to the DSpace ImageMagick thumbnail operation in DSpace 6.x and 7.x.</p>
+
+    <p>― Alan Orth</p>
+
+    <h2>Thumbnail Gallery</h2>
+    <p>The thumbnails below are 800 pixels on their longest side — usually height — and are rendered at 400 pixels in CSS for crispness and ease of comparison here. Use the slider overlay on each image to see the before and after application of <code>-unsharp 0.5</code> in ImageMagick.</p>
+
+    <h3>10568/103447</h3>
+    <figure class="image-compare">
+      <img src="img/10568-103447-dspace.jpg" />
+      <img src="img/10568-103447-dspace-unsharp.jpg" />
+    </figure>
+    
+    <h3 id="10568-116598">10568/116598</h3>
+    <figure class="image-compare" >
+      <img src="img/10568-116598-dspace.jpg" />
+      <img src="img/10568-116598-dspace-unsharp.jpg" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>The source PDF uses CMYK.</dd>
+      <dd>ImageMagick incorrectly creates a two-page thumbnail here!</dd>
+    </dl>
+
+    <h3>10568/3149</h3>
+    <figure class="image-compare" >
+      <img src="img/10568-3149-dspace.jpg" />
+      <img src="img/10568-3149-dspace-unsharp.jpg" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>Text is slightly more sharp.</dd>
+    </dl>
+
+    <h3>10568/51999</h3>
+    <figure class="image-compare" >
+        <img src="img/10568-51999-dspace.jpg" />
+        <img src="img/10568-51999-dspace-unsharp.jpg" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>The source PDF uses CMYK.</dd>
+      <dd>Text is slightly more sharp.</dd>
+    </dl>
+
+    <h3>10568/53155</h3>
+    <figure class="image-compare" >
+      <img src="img/10568-53155-dspace.jpg" />
+      <img src="img/10568-53155-dspace-unsharp.jpg" />
+    </figure>
+
+    <h3>10568/68624</h3>
+    <figure class="image-compare" >
+      <img src="img/10568-68624-dspace.jpg" />
+      <img src="img/10568-68624-dspace-unsharp.jpg" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>The source PDF uses CMYK.</dd>
+      <dd>Both text and image are noticeably more sharp.</dd>
+    </dl>
+
+    <h3>10568/68680</h3>
+    <figure class="image-compare" >
+      <img src="img/10568-68680-dspace.jpg" />
+      <img src="img/10568-68680-dspace-unsharp.jpg" />
+    </figure>
+
+    <h3>10568/71249</h3>
+    <figure class="image-compare" >
+      <img src="img/10568-71249-dspace.jpg" />
+      <img src="img/10568-71249-dspace-unsharp.jpg" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>The source PDF uses CMYK.</dd>
+      <dd>Both text and image are noticeably more sharp.</dd>
+    </dl>
+
+    <h3>10568/72646</h3>
+    <figure class="image-compare" >
+      <img src="img/10568-72646-dspace.jpg" />
+      <img src="img/10568-72646-dspace-unsharp.jpg" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>Text is noticeably more sharp.</dd>
+    </dl>
+
+    <h3>10568/75477</h3>
+    <figure class="image-compare" >
+      <img src="img/10568-75477-dspace.jpg">
+      <img src="img/10568-75477-dspace-unsharp.jpg">
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>Both text and image are noticeably more sharp.</dd>
+    </dl>
+
+    <h3>10568/76976</h3>
+    <figure class="image-compare" >
+      <img src="img/10568-76976-dspace.jpg" />
+      <img src="img/10568-76976-dspace-unsharp.jpg" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>Both text and image are noticeably more sharp.</dd>
+    </dl>
+
+    <h3>10568/77628</h3>
+    <figure class="image-compare" >
+      <img src="img/10568-77628-dspace.jpg" />
+      <img src="img/10568-77628-dspace-unsharp.jpg" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>The source PDF uses CMYK.</dd>
+      <dd>Both text and image are noticeably more sharp.</dd>
+    </dl>
+
+    <h3>10568/97925</h3>
+    <figure class="image-compare" >
+      <img src="img/10568-97925-dspace.jpg" />
+      <img src="img/10568-97925-dspace-unsharp.jpg" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>Text is noticeably more sharp.</dd>
+    </dl>
+
+    <h3>10568/108972</h3>
+    <figure class="image-compare" >
+      <img src="img/10568-108972-dspace.jpg" />
+      <img src="img/10568-108972-dspace-unsharp.jpg" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>This is the only example I've found so far where the sharpened image looks <em>worse</em>.</dd>
+    </dl>
+
+    <h2>More Information</h2>
+    <p>The thumbnails in this gallery were generated by the <code>src/create-thumbnails.sh</code> script using PDF bitstreams from the <a href="https://cgspace.cgiar.org">CGSpace</a> repository. CGSpace was running DSpace 6.3 at the time of writing.</p>
+    <p>See also: the excellent blog post about <a href="https://redskiesatnight.com/2005/04/06/sharpening-using-image-magick/">Sharpening using Image Magick</a> by Eric Jeschke.</p>
+
+    <h3>Future Work</h3>
+    <p>Future work may include:</p>
+    <ul>
+      <li>Switch to <a href="https://www.libvips.org/">libvips</a>, which is faster, uses less memory, and handles the case of <a href="#10568-116598">10568-116598</a> correctly.</li>
+      <li>Support other image formats like JPEG XL, AVIF, or WebP?</li>
+      <li>Adjust <code>-unsharp</code> parameters and compare quality to original using a metric like SSIM, PSNR, or VMAF.</li>
+    </ul>
+
+    <hr />
+    <footer>
+      <p id="footnote1">¹ The default size in DSpace 6.x is 80 pixels. DSpace 7.x increases this to 175 pixels, which is much better, but still not likely enough to look good on high-definition devices or other high-resolution displays where the repository's content may be harvested and displayed, for example on digital signboards.</p>
+    </footer>
+
+    <script src="js/image-compare-viewer.min.js"></script>
+    <script type="application/javascript">
+      const viewers = document.querySelectorAll(".image-compare");
+
+      const options = {
+        // Label Defaults
+        showLabels: true,
+        labelOptions: {
+          before: 'Before',
+          after: 'After',
+          onHover: false
+        },
+
+      };
+
+      viewers.forEach((element) => {
+          let view = new ImageCompare(element, options).mount();
+      });
+    </script>
+  </body>
+</html>
+
+<!-- vim: set ts=2 sw=2: -->
