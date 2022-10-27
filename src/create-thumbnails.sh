@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# create-thumbnails.sh v2022-10-09
+# create-thumbnails.sh v2022-10-27
 #
 
 # A bunch of handles with a mix of pictures, text, etc.
@@ -29,13 +29,6 @@ export CONVERT_BIN_PATH='/usr/bin/magick convert'
 export IDENTIFY_BIN_PATH='/usr/bin/magick identify'
 export GHOSTSCRIPT_RGB_PROFILE_PATH='/usr/share/ghostscript/iccprofiles/default_rgb.icc'
 export GHOSTSCRIPT_CMYK_PROFILE_PATH='/usr/share/ghostscript/iccprofiles/default_cmyk.icc'
-# Unsharp uses <radius>{x<sigma>}{+<amount>}{+<threshold>}, but we only need
-# radius and sigma to get the basic effect. Radius should be 0 to automatically
-# select an appropriate radius, and a sigma of 0.5 seems to give a good effect.
-#
-# See: https://imagemagick.org/script/command-line-options.php#unsharp
-# See: https://redskiesatnight.com/2005/04/06/sharpening-using-image-magick/
-export UNSHARP_VALUE='0x0.5'
 # URL to DSpace server (without /rest)
 DSPACE_URL='https://dspacetest.cgiar.org'
 
@@ -65,5 +58,13 @@ for handle in $HANDLES; do
         [[ $? -eq 0 ]] && echo "Downloaded $pdf_filename"
     fi
 
+    # check if PDF uses CMYK colorspace (only used for ImageMagick)
+    export cmyk="no"
+    identify_output=$($IDENTIFY_BIN_PATH "data/$pdf_filename"\[0\] 2> /dev/null)
+    if [[ $identify_output =~ CMYK ]]; then
+        export cmyk="yes"
+    fi
+
     ./src/dspace-thumbnail.sh
+    ./src/improved-thumbnail.sh
 done

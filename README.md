@@ -1,17 +1,17 @@
 # Improving DSpace PDF Thumbnails
-DSpace can be [configured](https://wiki.lyrasis.org/display/DSDOC6x/Mediafilters+for+Transforming+DSpace+Content) to use ImageMagick to generate thumbnails for PDF bitstreams. Out of the box the quality of these thumbnails is underwhelming because the resolution is low and the image is often blurry. The quality can be improved by increasing the resolution and applying an <em><a href="https://imagemagick.org/Usage/blur/#unsharp">unsharp mask</a></em> filter after resizing the image. This minor change has the effect of <em>sharpening</em> the resulting image, which is especially noticeable if the image contains text.
+DSpace can be [configured](https://wiki.lyrasis.org/display/DSDOC6x/Mediafilters+for+Transforming+DSpace+Content) to use ImageMagick to generate thumbnails for PDF bitstreams. Out of the box the quality of these thumbnails is underwhelming because the resolution is low and the image is often blurry. The quality can be improved by using a "supersampling" technique and by preferring the PDF `CropBox` over the `MediaBox` where possible. These two minor changes produce an image that more accurately resembles what the user would see if they opened the PDF on a screen, which is especially noticeable if the PDF contains text, gradients, or curved lines.
 
-I propose adding the `-unsharp 0.5` parameter to the DSpace ImageMagick thumbnail operation in DSpace 6.x and 7.x.
+I propose adding the `-density 144` and `-define pdf:use-cropbox=true` parameters to the DSpace ImageMagick PDF thumbnail operation in DSpace 6.x and 7.x.
 
 ## Example
-A comparison of the default DSpace thumbnail for an item on the CGSpace repository before and after adding `-unsharp 0.5`.
+A comparison of the default DSpace PDF thumbnail for an item on the CGSpace repository before and after adding the `-density 144` parameter.
 
 <p align="center">
   <img width="300" alt="Default DSpace thumbnail for 10568/71249" src="img/10568-71249-dspace.jpg">
-  <img width="300" alt="Default DSpace thumbnail for 10568/71249 with unsharp" src="img/10568-71249-dspace-unsharp.jpg">
+  <img width="300" alt="Default DSpace thumbnail for 10568/71249 with density 144" src="img/10568-71249-improved.jpg">
 </p>
 
-See more in-depth comparisons here: https://alanorth.github.io/improved-dspace-thumbnails/
+See more in-depth discussion and comparisons here: https://alanorth.github.io/improved-dspace-thumbnails/
 
 ## License
 
