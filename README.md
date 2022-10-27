@@ -7,8 +7,8 @@ I propose adding the `-density 144` and `-define pdf:use-cropbox=true` parameter
 A comparison of the default DSpace PDF thumbnail for an item on the CGSpace repository before and after adding the `-density 144` parameter.
 
 <p align="center">
-  <img width="300" alt="Default DSpace thumbnail for 10568/71249" src="img/10568-71249-dspace.jpg">
-  <img width="300" alt="Default DSpace thumbnail for 10568/71249 with density 144" src="img/10568-71249-improved.jpg">
+  <img width="300" alt="Default DSpace thumbnail for 10568/3149" src="img/10568-3149-dspace.jpg">
+  <img width="300" alt="Default DSpace thumbnail for 10568/3149 with density 144" src="img/10568-3149-improved.jpg">
 </p>
 
 See more in-depth discussion and comparisons here: https://alanorth.github.io/improved-dspace-thumbnails/
