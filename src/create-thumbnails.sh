@@ -18,7 +18,8 @@ HANDLES='10568/103447
 10568/97925
 10568/75477
 10568/116598
-10568/108972'
+10568/108972
+10568/3030'
 
 # Max width/height (will used the longest of the two, and not force the aspect)
 export THUMBNAIL_SIZE='800x800'
