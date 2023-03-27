@@ -15,7 +15,7 @@ See more in-depth discussion and comparisons here: https://alanorth.github.io/im
 
 ## License
 
->Copyright (C) 2022 Alan Orth
+>Copyright (C) Alan Orth
 >
 >This program is free software: you can redistribute it and/or modify
 >it under the terms of the GNU General Public License as published by
