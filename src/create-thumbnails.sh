@@ -23,7 +23,7 @@ HANDLES='10568/103447
 
 # Max width/height (will used the longest of the two, and not force the aspect)
 export THUMBNAIL_SIZE='800x800'
-# DSpace 6.x seems to use 92 (from checking a resulting JPEG)
+# DSpace 6.x seems to use 92 (default in ImageMagick)
 export THUMBNAIL_QUALITY=92
 export CURL_BIN_PATH='/usr/bin/curl'
 export CONVERT_BIN_PATH='/usr/bin/magick convert'
@@ -66,6 +66,6 @@ for handle in $HANDLES; do
         export cmyk="yes"
     fi
 
-    ./src/dspace-thumbnail.sh
-    ./src/improved-thumbnail.sh
+    ./src/dspace-thumbnail.sh # DSpace 6.3 / 7.4 thumbnails
+    ./src/improved-thumbnail.sh # DSpace 7.5
 done
