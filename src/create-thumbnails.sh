@@ -56,7 +56,7 @@ for handle in $HANDLES; do
         request_url="${DSPACE_URL}$retrieveLink"
         ${CURL_BIN_PATH} -s "${request_url}" -o "data/$pdf_filename"
 
-        [[ $? -eq 0 ]] && echo "Downloaded $pdf_filename"
+        [[ $? -eq 0 ]] && echo "> Downloaded $pdf_filename"
     fi
 
     # check if PDF uses CMYK colorspace (only used for ImageMagick)
