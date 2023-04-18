@@ -49,22 +49,39 @@ for pdf_filename in data/*.pdf; do
     if [[ $cmyk == 'yes' ]]; then
         # Note that we have to set the density and the CMYK profile before we
         # open the input file!
-        $CONVERT_BIN_PATH -density 144 -profile "$GHOSTSCRIPT_CMYK_PROFILE_PATH" \
-            -flatten -define pdf:use-cropbox=true "$pdf_filename"\[0\]      \
-            -profile "$GHOSTSCRIPT_RGB_PROFILE_PATH"                             \
-            -quality "$THUMBNAIL_QUALITY" "$lossy_supersample_out"
-
-        $CONVERT_BIN_PATH -density 144 -profile "$GHOSTSCRIPT_CMYK_PROFILE_PATH" \
-            -flatten -define pdf:use-cropbox=true "$pdf_filename"\[0\]      \
-            -profile "$GHOSTSCRIPT_RGB_PROFILE_PATH"                             \
-            "$lossless_supersample_out"
-    else
-        $CONVERT_BIN_PATH -density 144 -flatten -define pdf:use-cropbox=true \
-            "$pdf_filename"\[0\] -quality "$THUMBNAIL_QUALITY"          \
+        $CONVERT_BIN_PATH \
+            -density 144 \
+            -profile "$GHOSTSCRIPT_CMYK_PROFILE_PATH" \
+            -define pdf:use-cropbox=true \
+            "$pdf_filename"\[0\] \
+            -profile "$GHOSTSCRIPT_RGB_PROFILE_PATH" \
+            -quality "$THUMBNAIL_QUALITY" \
+            -flatten \
             "$lossy_supersample_out"
 
-        $CONVERT_BIN_PATH -density 144 -flatten -define pdf:use-cropbox=true \
-            "$pdf_filename"\[0\] "$lossless_supersample_out"
+        $CONVERT_BIN_PATH \
+            -density 144 \
+            -profile "$GHOSTSCRIPT_CMYK_PROFILE_PATH" \
+            -define pdf:use-cropbox=true \
+            "$pdf_filename"\[0\] \
+            -profile "$GHOSTSCRIPT_RGB_PROFILE_PATH" \
+            -flatten \
+            "$lossless_supersample_out"
+    else
+        $CONVERT_BIN_PATH \
+            -density 144 \
+            -define pdf:use-cropbox=true \
+            "$pdf_filename"\[0\] \
+            -quality "$THUMBNAIL_QUALITY" \
+            -flatten \
+            "$lossy_supersample_out"
+
+        $CONVERT_BIN_PATH \
+            -density 144 \
+            -define pdf:use-cropbox=true \
+            "$pdf_filename"\[0\] \
+            -flatten \
+            "$lossless_supersample_out"
     fi
 
     # Create the resized thumbnails
