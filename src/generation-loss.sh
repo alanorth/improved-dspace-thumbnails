@@ -36,12 +36,12 @@ for pdf_filename in data/*.pdf; do
     fi
 
     # 10568-103447.pdf → 10568-103447.pdf.jpg
-    supersample_lossy_out="img/$(basename $pdf_filename).jpg"
+    lossy_supersample_out="img/$(basename $pdf_filename).jpg"
     # 10568-103447.pdf → 10568-103447.pdf.jpg.jpg
     lossy_thumbnail_out="img/$(basename $pdf_filename).jpg.jpg"
 
     # 10568-103447.pdf → 10568-103447.pdf.png
-    supersample_lossless_out="img/$(basename $pdf_filename).png"
+    lossless_supersample_out="img/$(basename $pdf_filename).png"
     # 10568-103447.pdf → 10568-103447.pdf.png.jpg
     lossless_thumbnail_out="img/$(basename $pdf_filename).png.jpg"
 
@@ -52,22 +52,22 @@ for pdf_filename in data/*.pdf; do
         $CONVERT_BIN_PATH -density 144 -profile "$GHOSTSCRIPT_CMYK_PROFILE_PATH" \
             -flatten -define pdf:use-cropbox=true "$pdf_filename"\[0\]      \
             -profile "$GHOSTSCRIPT_RGB_PROFILE_PATH"                             \
-            -quality "$THUMBNAIL_QUALITY" "$supersample_lossy_out"
+            -quality "$THUMBNAIL_QUALITY" "$lossy_supersample_out"
 
         $CONVERT_BIN_PATH -density 144 -profile "$GHOSTSCRIPT_CMYK_PROFILE_PATH" \
             -flatten -define pdf:use-cropbox=true "$pdf_filename"\[0\]      \
             -profile "$GHOSTSCRIPT_RGB_PROFILE_PATH"                             \
-            "$supersample_lossless_out"
+            "$lossless_supersample_out"
     else
         $CONVERT_BIN_PATH -density 144 -flatten -define pdf:use-cropbox=true \
             "$pdf_filename"\[0\] -quality "$THUMBNAIL_QUALITY"          \
-            "$supersample_lossy_out"
+            "$lossy_supersample_out"
 
         $CONVERT_BIN_PATH -density 144 -flatten -define pdf:use-cropbox=true \
-            "$pdf_filename"\[0\] "$supersample_lossless_out"
+            "$pdf_filename"\[0\] "$lossless_supersample_out"
     fi
 
     # Create the resized thumbnails
-    $CONVERT_BIN_PATH "$supersample_lossy_out" "$lossy_thumbnail_out"
-    $CONVERT_BIN_PATH "$supersample_lossless_out" "$lossless_thumbnail_out"
+    $CONVERT_BIN_PATH "$lossy_supersample_out" "$lossy_thumbnail_out"
+    $CONVERT_BIN_PATH "$lossless_supersample_out" "$lossless_thumbnail_out"
 done
