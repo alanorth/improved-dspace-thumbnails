@@ -84,7 +84,7 @@ for pdf_filename in data/*.pdf; do
             "$lossless_supersample_out"
     fi
 
-    # Create the resized thumbnails
+    # Create the final "distorted" thumbnails for comparison
     $CONVERT_BIN_PATH "$lossy_supersample_out" "$lossy_thumbnail_out"
     $CONVERT_BIN_PATH "$lossless_supersample_out" "$lossless_thumbnail_out"
 done
