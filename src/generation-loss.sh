@@ -1,27 +1,30 @@
 #!/usr/bin/env bash
 
 # Attempt to quantify the effect of generation loss due to DSpace's default
-# behavior of converting PDF to JPG to JPG.
+# behavior of converting PDF to JPG to JPG. JPEG is a lossy format, and we
+# end up doing two lossy conversions with ImageMagick's default quality of
+# 92. Note that ImageMagick does have a `-compress lossless` option, but the
+# docs say that this refers to Lossless JPEG and should not be used. (A new
+# attempt at creating true Lossless JPEG exists in JPEG-XL, but it is not
+# widely adopted yet).
 #
 # After generating the thumbnails I checked their similarity to the reference
-# lossless PNG using ssimulacra:
+# lossless PNG using ssimulacra2:
 #
 #   $ for file in data/*.pdf; do ssimulacra2 "img/$(basename $file).png" "img/$(basename $file).jpg.jpg" 2>/dev/null; done
 #   $ for file in data/*.pdf; do ssimulacra2 "img/$(basename $file).png" "img/$(basename $file).png.jpg" 2>/dev/null; done
 #
-# With my sample set of seventeen PDFs from CGSpace I found that the "JPG JPG"
-# method of thumbnailing results in scores an average of 1.6% lower than with
-# the "PNG JPG" method. The average file size with the "PNG JPG" method was
-# only 200 bytes larger.
+# With my sample set of twenty-four PDFs from CGSpace I found that the "JPG JPG"
+# method of thumbnailing results in ssimulacra2 scores an average of two points
+# lower than with the "PNG JPG" method. The average file size with the "PNG JPG"
+# method was only 500 *bytes* larger.
 #
-# Alan Orth, 2023-03-28
+# Alan Orth, 2023-04-17
 #
-# imagemagick 7.1.1.5
+# imagemagick 7.1.1.7
 # libjpeg-turbo 2.1.5
-# ssimulacra 9851c9a11d16af48a1598e4ffbfd73e5bb9b806b
+# ssimulacra2 9851c9a11d16af48a1598e4ffbfd73e5bb9b806b
 
-# ImageMagick's default quality is 92, but let's be explicit
-THUMBNAIL_QUALITY=92
 CONVERT_BIN_PATH='/usr/bin/magick convert'
 IDENTIFY_BIN_PATH='/usr/bin/magick identify'
 GHOSTSCRIPT_RGB_PROFILE_PATH='/usr/share/ghostscript/iccprofiles/default_rgb.icc'
@@ -55,7 +58,6 @@ for pdf_filename in data/*.pdf; do
             -define pdf:use-cropbox=true \
             "$pdf_filename"\[0\] \
             -profile "$GHOSTSCRIPT_RGB_PROFILE_PATH" \
-            -quality "$THUMBNAIL_QUALITY" \
             -flatten \
             "$lossy_supersample_out"
 
@@ -72,7 +74,6 @@ for pdf_filename in data/*.pdf; do
             -density 144 \
             -define pdf:use-cropbox=true \
             "$pdf_filename"\[0\] \
-            -quality "$THUMBNAIL_QUALITY" \
             -flatten \
             "$lossy_supersample_out"
 
