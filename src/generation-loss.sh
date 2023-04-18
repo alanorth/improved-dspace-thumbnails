@@ -21,18 +21,18 @@
 # ssimulacra 9851c9a11d16af48a1598e4ffbfd73e5bb9b806b
 
 # ImageMagick's default quality is 92, but let's be explicit
-export THUMBNAIL_QUALITY=92
-export CONVERT_BIN_PATH='/usr/bin/magick convert'
-export IDENTIFY_BIN_PATH='/usr/bin/magick identify'
-export GHOSTSCRIPT_RGB_PROFILE_PATH='/usr/share/ghostscript/iccprofiles/default_rgb.icc'
-export GHOSTSCRIPT_CMYK_PROFILE_PATH='/usr/share/ghostscript/iccprofiles/default_cmyk.icc'
+THUMBNAIL_QUALITY=92
+CONVERT_BIN_PATH='/usr/bin/magick convert'
+IDENTIFY_BIN_PATH='/usr/bin/magick identify'
+GHOSTSCRIPT_RGB_PROFILE_PATH='/usr/share/ghostscript/iccprofiles/default_rgb.icc'
+GHOSTSCRIPT_CMYK_PROFILE_PATH='/usr/share/ghostscript/iccprofiles/default_cmyk.icc'
 
 for pdf_filename in data/*.pdf; do
     # check if PDF uses CMYK colorspace (only used for ImageMagick)
-    export cmyk="no"
+    cmyk="no"
     identify_output=$($IDENTIFY_BIN_PATH "$pdf_filename"\[0\] 2> /dev/null)
     if [[ $identify_output =~ CMYK ]]; then
-        export cmyk="yes"
+        cmyk="yes"
     fi
 
     # 10568-103447.pdf → 10568-103447.pdf.jpg
