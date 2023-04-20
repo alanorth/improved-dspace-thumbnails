@@ -14,12 +14,12 @@
 #   $ for file in data/*.pdf; do ssimulacra2 "img/$(basename $file).png" "img/$(basename $file).jpg.jpg" 2>/dev/null; done
 #   $ for file in data/*.pdf; do ssimulacra2 "img/$(basename $file).png" "img/$(basename $file).png.jpg" 2>/dev/null; done
 #
-# With my sample set of twenty-four PDFs from CGSpace I found that the "JPG JPG"
-# method of thumbnailing results in ssimulacra2 scores an average of two points
+# With my sample set of thirty-five PDFs from CGSpace I found that the "JPG JPG"
+# method of thumbnailing results in ssimulacra2 scores an average of 1.8 points
 # lower than with the "PNG JPG" method. The average file size with the "PNG JPG"
-# method was only 500 *bytes* larger.
+# method was only 400 *bytes* larger.
 #
-# Alan Orth, 2023-04-17
+# Alan Orth, 2023-04-19
 #
 # imagemagick 7.1.1.7
 # libjpeg-turbo 2.1.5
