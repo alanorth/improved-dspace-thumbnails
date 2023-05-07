@@ -24,6 +24,7 @@
     </style>
   </head>
   <body>
+    <blockquote>Note: this page details work I did to improve DSpace thumbnails in 2022, corresponding in some .</blockquote>
     <h1>Improving DSpace PDF Thumbnails</h1>
     <p>DSpace has supported using ImageMagick to generate thumbnails for PDFs <a href="https://wiki.lyrasis.org/display/DSDOC5x/Release+Notes">since version 5.0</a>. It is possible to increase the thumbnail resolution<a href="#footnote1">¹</a>, but these thumbnails are generally still a bit blurry due to a side effect of the resize operation.</p>
 
@@ -63,10 +64,10 @@
     </dl>
     
     <h3 id="10568-116598">10568/116598</h3>
-    <figure class="image-compare" >
-      <img src="img/10568-116598-dspace.jpg" />
-      <img src="img/10568-116598-improved.jpg" />
-    </figure>
+    <p>
+      <img src="img/10568-116598-dspace.jpg" height="300" />
+      <img src="img/10568-116598-improved.jpg" height="300" />
+    </p>
     <dl>
       <dt>Notes:</dt>
       <dd>The source PDF uses CMYK.</dd>
@@ -211,7 +212,7 @@
 
     <h3 id="upstream-progress">Upstream Progress</h2>
     <ul>
-      <li><strong>2023-03-16:</strong> I have created <a href="https://github.com/DSpace/DSpace/pull/8722" title="Update bitstream format registry">a pull request to update the bitstream format registry for DSpace 7.x</a>.</li>
+      <li><strong>2023-03-16:</strong> I have created <a href="https://github.com/DSpace/DSpace/pull/8722" title="Update bitstream format registry">a pull request to update the bitstream format registry for DSpace 7.x</a>. ✅</li>
       <li><strong>2022-10-28:</strong> I have created <a href="https://github.com/DSpace/DSpace/pull/8553" title="dspace-api: allow overriding ImageMagick density">a pull request for the "supersampling" method for DSpace 7.x</a>. ✅</li>
       <li><strong>2022-10-27:</strong> I have created <a href="https://github.com/DSpace/DSpace/pull/8550" title="dspace-api: tell ImageMagick about the PDF CropBox">a pull request for the <code>CropBox</code> change for DSpace 7.x</a>. ✅</li>
       <li><strong>2022-10-12:</strong> I have created <a href="https://github.com/DSpace/DSpace/pull/8515" title="dspace-api: apply unsharp mask to ImageMagick PDF operations">a pull request to apply an <em>unsharp mask</em> for DSpace 7.x</a>. ❌</li>
@@ -224,7 +225,7 @@
       <li>Switch to <a href="https://www.libvips.org/">libvips</a>, which is faster, uses less memory, and <s>handles the case of <a href="#10568-116598">10568-116598</a> correctly</s> (this was <a href="https://bugs.ghostscript.com/show_bug.cgi?id=705994" title="Bug 705994 - Strange two-page layout for certain PDF thumbnails">an issue with the MediaBox</a>).</li>
       <li>Support other image formats like JPEG XL, AVIF, or WebP?</li>
       <li>Make use of an <em>unsharp mask</em> in ImageMagick's resize operation. See this excellent blog post about <a href="https://redskiesatnight.com/2005/04/06/sharpening-using-image-magick/">Sharpening using Image Magick</a> by Eric Jeschke.</li>
-      <li>Compare thumbnail quality using a metric like SSIM, PSNR, or VMAF.</li>
+      <li>Compare thumbnail quality using a perceptual metric like SSIM, PSNR, or VMAF.</li>
     </ul>
 
     <h3>Changelog</h3>
