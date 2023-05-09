@@ -27,7 +27,7 @@
     <h1>Improving DSpace PDF Thumbnails</h1>
     <p>DSpace has supported using ImageMagick to generate thumbnails for PDFs <a href="https://wiki.lyrasis.org/display/DSDOC5x/Release+Notes">since version 5.0</a>. It is possible to increase the thumbnail resolution<a href="#footnote1">¹</a>, but these thumbnails are generally still a bit blurry due to a side effect of the resize operation.</p>
 
-    <p>In my experience the thumbnail quality can be improved by using a "supersampling" technique and by preferring the PDF <code>CropBox</code> over the <code>MediaBox</code> where possible.
+    <p>In my experience the thumbnail quality can be improved by using a "supersampling" technique and by preferring the PDF <code>CropBox</code> over the <code>MediaBox</code> where possible.</p>
 
     <p>I propose adding the <code>-density 144</code> and <code>-define pdf:use-cropbox=true</code> parameters to the DSpace ImageMagick PDF thumbnail operation in DSpace 6.x and 7.x. Read below for more background and examples.</p>
 
