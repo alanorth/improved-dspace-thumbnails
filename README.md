@@ -4,7 +4,7 @@ Based on my comparative analysis of JPEG, WebP, and AVIF with a sample size of t
 Given that [WebP is widely supported in web browsers](https://caniuse.com/webp) I propose switching DSpace's default PDF thumbnail format to WebP. Furthermore, I propose re-working the ImageMagick PDF thumbnail filter to not perform a double lossy conversion from PDF to JPEG to JPEG.
 
 ## Example
-A comparison of a DSpace 7.6 PDF thumbnail for an item on the CGSpace repository in JPEG and WebP formats.
+A comparison of a PDF thumbnail for an item from the CGSpace repository in JPEG and WebP formats. The WebP file is 42% smaller!
 
 <p align="center">
   <img width="300" alt="DSpace thumbnail for 10568/3149 (JPEG)" src="img/im7/10568-3149.pdf-q92.jpg /">
