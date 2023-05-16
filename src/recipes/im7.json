@@ -1,0 +1,28 @@
+{
+    "recipes": {
+        "avif": {
+            "quality_start": 1,
+            "quality_end": 100,
+            "quality_step": 1,
+            "encode_extension": "avif",
+            "encode_cmd": "podman run --rm -v .:/imgs docker.io/dpokidov/imagemagick -colorspace sRGB -density 144 -define pdf:use-cropbox=true data/${pdf_filename}[0] -quality $q -thumbnail $THUMBNAIL_SIZE -flatten $target",
+            "export_to_png": true
+        },
+        "webp": {
+            "quality_start": 1,
+            "quality_end": 100,
+            "quality_step": 1,
+            "encode_extension": "webp",
+            "encode_cmd": "podman run --rm -v .:/imgs docker.io/dpokidov/imagemagick -colorspace sRGB -density 144 -define pdf:use-cropbox=true data/${pdf_filename}[0] -quality $q -define webp:method=6 -thumbnail $THUMBNAIL_SIZE -flatten $target",
+            "export_to_png": true
+        },
+        "jpeg": {
+            "quality_start": 1,
+            "quality_end": 100,
+            "quality_step": 1,
+            "encode_extension": "jpg",
+            "encode_cmd": "podman run --rm -v .:/imgs docker.io/dpokidov/imagemagick -colorspace sRGB -density 144 -define pdf:use-cropbox=true data/${pdf_filename}[0] -quality $q -thumbnail $THUMBNAIL_SIZE -flatten $target",
+            "export_to_png": false
+        }
+    }
+}

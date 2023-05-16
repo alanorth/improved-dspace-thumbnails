@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# create-thumbnails.sh v2022-10-27
+# create-thumbnails.sh v2023-05-13
 #
 
 # A bunch of handles with a mix of pictures, text, etc.
@@ -19,22 +19,49 @@ HANDLES='10568/103447
 10568/75477
 10568/116598
 10568/108972
-10568/3030'
+10568/3030
+10568/129639
+10568/129206
+10568/128829
+10568/109734
+10568/108738
+10568/113761
+10568/52329
+10568/125404
+10568/89049
+10568/101420
+10568/105388
+10568/104574
+10568/105185
+10568/104619
+10568/105262
+10568/104719
+10568/104591
+10568/105063
+10568/104354'
 
-# Max width/height (will used the longest of the two, and not force the aspect)
+# Max width/height, which uses the longest of the two without forcing the aspect
 export THUMBNAIL_SIZE='800x800'
 # DSpace 6.x seems to use 92 (default in ImageMagick)
 export THUMBNAIL_QUALITY=92
-export CURL_BIN_PATH='/usr/bin/curl'
+CURL_BIN_PATH='/usr/bin/curl'
 export CONVERT_BIN_PATH='/usr/bin/magick convert'
 export IDENTIFY_BIN_PATH='/usr/bin/magick identify'
+# Only for ImageMagick 6, apparently not needed in ImageMagick 7
 export GHOSTSCRIPT_RGB_PROFILE_PATH='/usr/share/ghostscript/iccprofiles/default_rgb.icc'
 export GHOSTSCRIPT_CMYK_PROFILE_PATH='/usr/share/ghostscript/iccprofiles/default_cmyk.icc'
+# Number of processes to run at a time
+export NUM_CPUS=$(nproc)
 # URL to DSpace server (without /rest)
 DSPACE_URL='https://dspacetest.cgiar.org'
 
-# Create a directory to save PDFs
-mkdir -p data
+# Create directories
+mkdir -p data img/im7 results/im7
+
+# Start pueue and adjust number of parallel tasks for our queue. Using the num-
+# ber of logical CPUs minus two to account for overhead.
+systemctl start --user pueued
+pueue parallel $((NUM_CPUS-2))
 
 for handle in $HANDLES; do
     echo "Processing $handle..."
@@ -66,6 +93,13 @@ for handle in $HANDLES; do
         export cmyk="yes"
     fi
 
-    ./src/dspace-thumbnail.sh # DSpace 6.3 / 7.4 thumbnails
-    ./src/improved-thumbnail.sh # DSpace 7.5
+    #./src/dspace-thumbnail.sh # DSpace 6.3 / 7.4 thumbnails
+    #./src/improved-thumbnail.sh # DSpace 7.5
+
+    # Experimental things
+    #./src/improved-lossless.sh # For comparison using ssimulacra2
+
+    #./src/improved-thumbnail-im7.sh
+    #./src/improved-thumbnail-im7-webp.sh
+    #./src/improved-thumbnail-im7-avif.sh
 done

@@ -13,6 +13,14 @@ A comparison of the default DSpace PDF thumbnail for an item on the CGSpace repo
 
 See more in-depth discussion and comparisons here: https://alanorth.github.io/improved-dspace-thumbnails/
 
+## Notes
+
+- If we don't specify a quality ImageMagick will use 92, see: https://imagemagick.org/script/command-line-options.php#quality
+  - This means that, when we do a "supersample" first followed by a thumbnail, it uses quality 92 for the first, and again for the second, which is generation loss...
+- `-compress Lossless` is only for JPEG and is not recommended
+  - Should use `-quality 100` instead, as "lossless" JPEG is not widely supported (needs a patched libjpeg)
+  - I'm unclear about the interaction between `-quality` and `-define webp:lossless=true` for WebP...
+
 ## License
 
 >Copyright (C) Alan Orth

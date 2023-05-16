@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" >
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Evaluating JPEG, WebP, and AVIF" />
+    <meta property="og:description" content="Improving DSpace PDF thumbnail quality by exploring alternative image formats." />
+    <meta property="og:type" content="website" />
+
+    <link rel="stylesheet" href="css/sakura.css" type="text/css">
+    <link rel="stylesheet" href="css/image-compare-viewer.min.css" type="text/css">
+
+    <style>
+      .image-compare {
+        width: 400px;
+        margin: auto auto;
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,.1),0 4px 6px -2px rgba(0,0,0,.05);
+      }
+
+      dd::before {
+        content: "• ";
+        font-weight: 700;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Evaluating JPEG, WebP, and AVIF</h1>
+    <p>After making some <a href="index.html">improvements to the PDF thumbnails in DSpace 7.5 and DSpace 7.6</a>, I wanted to explore some of the ideas I had highlighted for future work. One of the most promising improvements is switching from the JPEG image format to a more modern format, such as WebP, AVIF, or JPEG-XL.</p>
+
+    <p>In brief, JPEG is an older image format, while WebP, AVIF, and JPEG-XL are each successively newer and more advanced. These newer formats provide similar visual quality to JPEG but with smaller file sizes. However, the level of support for these formats varies, with only WebP and AVIF having gained broad support in client-side applications like web browsers.<a href="#footnote1">¹</a></p>
+
+    <p>Based on my evaluation of WebP and AVIF against JPEG using a representative sample of real PDFs from <a href="https://cgspace.cgiar.org">our institutional repository</a>, I recommend that DSpace default to WebP as its image format for PDF thumbnails.</p>
+
+    <p>― Alan Orth (<a href="https://github.com/alanorth" title="Alan Orth's profile on GitHub">@alanorth</a>), 2023-05</p>
+
+    <h2 id="background">Background and Methodology</h2>
+    <p>More than a decade ago, Google conducted their <a href="https://developers.google.com/speed/webp/docs/webp_study">second major WebP compression study</a>. Although much time has passed, the methodology remains relevant: because "quality" settings between image formats are not consistent, <em>we must use a visual quality metric to establish equivalent "quality" settings for each format before we can compare compression results accurately</em>. For example, JPEG Q92 is not the same as WebP Q92 or AVIF Q92. The current state-of-the-art perceptual quality metric is <a href="https://github.com/cloudinary/ssimulacra2">ssimulacra2</a> (v2.1) by Jon Sneyers.</p>
+
+    <p>Using a sample size of thirty-five PDFs I performed thumbnail operations at quality settings one to 100 for JPEG, WebP, and AVIF with ImageMagick. For each source PDF, I generated a lossless reference (PNG) and calculated the ssimulacra2 score for each thumbnail with regards to the reference. These tasks were broken up into individual "jobs" and submitted to a local process queue called <a href="https://github.com/Nukesor/pueue">pueue</a>. Needless to say, managing this workflow and the nearly 11,000 jobs became a significant part of the analysis<a href="#footnote2">²</a>! Results were saved to CSV and plotted using gnuplot.</p>
+
+    <h3 id="bits-per-pixel">Bits Per Pixel (BPP)</h3>
+    <p>Using a sample size of thirty-five PDFs, I calculated the average ssimulacra2 scores for quality settings 1 to 100 for each image format relative to a lossless reference. Then I plotted the ssimulacra2 scores against the average number of bits per pixel (BPP) needed by each format:</p>
+
+    <img src="results/im7/score-vs-bpp.png" alt="gnuplot graph showing average ssimulacra2 scores versus average bits per pixel (BPP) for JPEG, WebP, and AVIF." />
+
+    <p>From the above it is obvious that both WebP and AVIF outperform JPEG in terms of BPP: they both need less bits to achieve the same perceptual quality as JPEG.</p>
+
+    <p>Another way to visualize the same is by plotting the average file size in bytes versus average ssimulacra2 scores:</p>
+
+    <img src="results/im7/size-vs-score.png" alt="gnuplot graph showing average sizes in bytes versus average ssimulacra2 scores for JPEG, WebP, and AVIF." />
+
+    <h3 id="equivalent-quality-settings">Equivalent Quality Settings</h3>
+    <p>We can also see that both WebP and AVIF have diminishing returns after achieving a ssimulacra2 score of around 80. According to ssimulacra2, scores can range between -infinity and 100, with 70 being "high quality" and 90 being "very high quality". For the purpose of this evaluation I will assume that a score of 80 is reasonably high enough. In any case, it seems that WebP (in particular) and AVIF have trouble achieving "very high quality" scores—with this dataset at least:</p>
+
+    <img src="results/im7/score-vs-quality.png" alt="gnuplot graph showing average ssimulacra2 scores versus quality for JPEG, WebP, and AVIF." />
+
+    <p>Using a ssimulacra2 score of 80 as the target perceptual quality gives the following equivalencies between "quality" settings for each format:
+
+    <ul>
+      <li><strong>JPEG:</strong> Q89</li>
+      <li><strong>WebP:</strong> Q86</li>
+      <li><strong>AVIF:</strong> Q65</li>
+    </ul>
+
+    <h3 id="summary">Summary of Findings</h3>
+    <p>After establishing equivalent "quality" settings for JPEG, WebP, and AVIF for this dataset, we can see that <em>WebP and AVIF require 33% and 46% less bits than JPEG, respectively, to achieve a ssimulacra2 score of 80</em>. A score of 80 falls between the "high quality" and "very high quality" brackets on ssimulacra2's scoring scale. We observed that WebP and AVIF have problems reaching "very high quality" scores, which may or may not be a problem depending on application requirements.</p>
+
+    <p>Finally, while AVIF may be compelling technically, according to <a href="https://caniuse.com/avif">caniuse.com's data about web browser share and feature implementation</a>, support is still too low to consider in practice. Many DSpace repositories are deployed in developing country or corporate settings where users may not have the latest web browsers.</p>
+
+    <h2 id="thumbnail-gallery">Thumbnail Gallery</h2>
+    <p>The thumbnails below are 800 pixels on their longest side — usually height — and are rendered at 400 pixels in CSS for crispness and ease of comparison here. Use the slider overlay on each image to compare the JPEG with the WebP version of each thumbnail.</p>
+
+    <blockquote>
+      <p>Note: As DSpace 7.5 uses the default ImageMagick quality setting of 92 for JPEG thumbnails, I use that for the comparison here. For the WebP thumbnails I use a quality setting of 86, which I found to be sufficient in my tests above.</p>
+      <br />
+      <p>The goal of this thumbnail gallery is not to perform an "apples to apples" comparison, but to show how WebP compares visually to <em>existing</em> DSpace JPEG thumbnails. This approach gives JPEG an advantage when it comes to visual quality and a disadvantage on file size. 🤷</p>
+    </blockquote>
+
+    <h3>10568/103447</h3>
+    <figure class="image-compare">
+      <img src="img/im7/10568-103447.pdf-q92.jpg" />
+      <img src="img/im7/10568-103447.pdf-q86.webp" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>WebP size: 88134 bytes (48% smaller)</dd>
+      <dd>JPEG size: 167776 bytes</dd>
+    </dl>
+
+    <h3 id="10568-116598">10568/116598</h3>
+    <figure class="image-compare" >
+      <img src="img/im7/10568-116598.pdf-q92.jpg" />
+      <img src="img/im7/10568-116598.pdf-q86.webp" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>WebP size: 29478 bytes (58% smaller)</dd>
+      <dd>JPEG size: 69653 bytes</dd>
+    </dl>
+
+    <h3>10568/3149</h3>
+    <figure class="image-compare" >
+      <img src="img/im7/10568-3149.pdf-q92.jpg" />
+      <img src="img/im7/10568-3149.pdf-q86.webp" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>WebP size: 103088 bytes (43% smaller)</dd>
+      <dd>JPEG size: 178210 bytes</dd>
+    </dl>
+
+    <h3>10568/51999</h3>
+    <figure class="image-compare" >
+        <img src="img/im7/10568-51999.pdf-q92.jpg" />
+        <img src="img/im7/10568-51999.pdf-q86.webp" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>WebP size: 95310 bytes (46% smaller)</dd>
+      <dd>JPEG size: 175459 bytes</dd>
+    </dl>
+
+    <h3>10568/53155</h3>
+    <figure class="image-compare" >
+      <img src="img/im7/10568-53155.pdf-q92.jpg" />
+      <img src="img/im7/10568-53155.pdf-q86.webp" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>WebP size: 36022 bytes (57% smaller)</dd>
+      <dd>JPEG size: 83531 bytes</dd>
+    </dl>
+
+    <h3>10568/68624</h3>
+    <figure class="image-compare" >
+      <img src="img/im7/10568-68624.pdf-q92.jpg" />
+      <img src="img/im7/10568-68624.pdf-q86.webp" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>WebP size: 85676 bytes (48% smaller)</dd>
+      <dd>JPEG size: 164226 bytes</dd>
+    </dl>
+
+    <h3>10568/68680</h3>
+    <figure class="image-compare" >
+      <img src="img/im7/10568-68680.pdf-q92.jpg" />
+      <img src="img/im7/10568-68680.pdf-q86.webp" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>WebP size: 119828 bytes (47% smaller)</dd>
+      <dd>JPEG size: 223612 bytes</dd>
+    </dl>
+
+    <h3>10568/71249</h3>
+    <figure class="image-compare" >
+      <img src="img/im7/10568-71249.pdf-q92.jpg" />
+      <img src="img/im7/10568-71249.pdf-q86.webp" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>WebP size: 59724 bytes (54% smaller)</dd>
+      <dd>JPEG size: 129704 bytes</dd>
+    </dl>
+
+    <h3>10568/72646</h3>
+    <figure class="image-compare" >
+      <img src="img/im7/10568-72646.pdf-q92.jpg" />
+      <img src="img/im7/10568-72646.pdf-q86.webp" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>WebP size: 75162 bytes (53% smaller)</dd>
+      <dd>JPEG size: 158742 bytes</dd>
+    </dl>
+
+    <h3>10568/75477</h3>
+    <figure class="image-compare" >
+      <img src="img/im7/10568-75477.pdf-q92.jpg">
+      <img src="img/im7/10568-75477.pdf-q86.webp">
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>WebP size: 38652 bytes (63% smaller)</dd>
+      <dd>JPEG size: 102758 bytes</dd>
+    </dl>
+
+    <h3>10568/76976</h3>
+    <figure class="image-compare" >
+      <img src="img/im7/10568-76976.pdf-q92.jpg" />
+      <img src="img/im7/10568-76976.pdf-q86.webp" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>WebP size: 91530 bytes (52% smaller)</dd>
+      <dd>JPEG size: 187018 bytes</dd>
+    </dl>
+
+    <h3>10568/77628</h3>
+    <figure class="image-compare" >
+      <img src="img/im7/10568-77628.pdf-q92.jpg" />
+      <img src="img/im7/10568-77628.pdf-q86.webp" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>WebP size: 108646 bytes (46% smaller)</dd>
+      <dd>JPEG size: 201375 bytes</dd>
+    </dl>
+    </dl>
+
+    <h3>10568/97925</h3>
+    <figure class="image-compare" >
+      <img src="img/im7/10568-97925.pdf-q92.jpg" />
+      <img src="img/im7/10568-97925.pdf-q86.webp" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>WebP size: 86518 bytes (50% smaller)</dd>
+      <dd>JPEG size: 170560 bytes</dd>
+    </dl>
+
+    <h3>10568/108972</h3>
+    <figure class="image-compare" >
+      <img src="img/im7/10568-108972.pdf-q92.jpg" />
+      <img src="img/im7/10568-108972.pdf-q86.webp" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>WebP size: 82240 bytes (55% smaller)</dd>
+      <dd>JPEG size: 180837 bytes</dd>
+    </dl>
+
+    <h3>10568/3030</h3>
+    <figure class="image-compare" >
+      <img src="img/im7/10568-3030.pdf-q92.jpg" />
+      <img src="img/im7/10568-3030.pdf-q86.webp" />
+    </figure>
+    <dl>
+      <dt>Notes:</dt>
+      <dd>WebP size: 90372 bytes (48% smaller)</dd>
+      <dd>JPEG size: 174172 bytes</dd>
+    </dl>
+
+    <h2 id="more-information">More Information</h2>
+    <p>The thumbnails in this gallery were generated by the <code>src/create-thumbnails.sh</code> script using PDF bitstreams from the <a href="https://cgspace.cgiar.org">CGSpace</a> repository. The <a href="https://github.com/alanorth/improved-dspace-thumbnails/">scripts to reproduce the results are available on GitHub</a>.</p>
+
+    <h3>Future Work</h3>
+    <p>Future work may include:</p>
+    <ul>
+      <li>Switch to <a href="https://www.libvips.org/">libvips</a>, which is faster, uses less memory, and handles things like pagination, CMYK, PDF CropBox, and more automatically.</li>
+      <li>Re-work DSpace ImageMagick PDF filter to avoid <a href="https://github.com/alanorth/improved-dspace-thumbnails/blob/main/src/generation-loss.sh">generation loss</a>.</li>
+      <li>Switch to AVIF or JPEG-XL when the browser support and tooling are more widespread.</a>.</li>
+    </ul>
+
+    <hr />
+    <footer>
+      <p id="footnote1">¹ As of April, 2023 <a href="https://caniuse.com/webp">WebP</a> and <a href="https://caniuse.com/avif">AVIF</a> are support by 97.66% and 84% of web users, respectively, according to caniuse.com.</p>
+      <p id="footnote2">² To make matters more complicated, I performed a simultaneous analysis using libvips. The total number of jobs was over 20,000, which is well beyond what pueue was designed for, and which caused some scaling issues on my systems.</p>
+    </footer>
+
+    <script src="js/image-compare-viewer.min.js"></script>
+    <script type="application/javascript">
+      const viewers = document.querySelectorAll(".image-compare");
+
+      const options = {
+        // Label Defaults
+        showLabels: true,
+        labelOptions: {
+          before: 'JPEG',
+          after: 'WebP',
+          onHover: false
+        },
+
+      };
+
+      viewers.forEach((element) => {
+          let view = new ImageCompare(element, options).mount();
+      });
+    </script>
+  </body>
+</html>
+
+<!-- vim: set ts=2 sw=2: -->
