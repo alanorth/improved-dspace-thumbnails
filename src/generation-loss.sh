@@ -21,6 +21,10 @@
 #
 # Alan Orth, 2023-04-20
 #
+# Update (2023-05-18): instead of using PNG we can also use ImageMagick's own
+# internal lossless format MIFF. The results are nearly identical to PNG's, but
+# MIFF has the benefit of being faster.
+#
 # imagemagick 7.1.1.7
 # libjpeg-turbo 2.1.5
 # ssimulacra2 v2.1
@@ -48,6 +52,11 @@ for pdf_filename in data/*.pdf; do
     # 10568-103447.pdf → 10568-103447.pdf.png.jpg
     lossless_thumbnail_out="img/$(basename $pdf_filename).png.jpg"
 
+    # 10568-103447.pdf → 10568-103447.pdf.miff
+    lossless_miff_supersample_out="img/$(basename $pdf_filename).miff"
+    # 10568-103447.pdf → 10568-103447.pdf.miff.jpg
+    lossless_miff_thumbnail_out="img/$(basename $pdf_filename).miff.jpg"
+
     # Create the supersamples first since we need to handle CMYK specially
     if [[ $cmyk == 'yes' ]]; then
         # Note that we have to set the density and the CMYK profile before we
@@ -69,6 +78,15 @@ for pdf_filename in data/*.pdf; do
             -profile "$GHOSTSCRIPT_RGB_PROFILE_PATH" \
             -flatten \
             "$lossless_supersample_out"
+
+        $CONVERT_BIN_PATH \
+            -density 144 \
+            -profile "$GHOSTSCRIPT_CMYK_PROFILE_PATH" \
+            -define pdf:use-cropbox=true \
+            "$pdf_filename"\[0\] \
+            -profile "$GHOSTSCRIPT_RGB_PROFILE_PATH" \
+            -flatten \
+            "$lossless_miff_supersample_out"
     else
         $CONVERT_BIN_PATH \
             -density 144 \
@@ -83,9 +101,17 @@ for pdf_filename in data/*.pdf; do
             "$pdf_filename"\[0\] \
             -flatten \
             "$lossless_supersample_out"
+
+        $CONVERT_BIN_PATH \
+            -density 144 \
+            -define pdf:use-cropbox=true \
+            "$pdf_filename"\[0\] \
+            -flatten \
+            "$lossless_miff_supersample_out"
     fi
 
     # Create the final "distorted" thumbnails for comparison
     $CONVERT_BIN_PATH "$lossy_supersample_out" "$lossy_thumbnail_out"
     $CONVERT_BIN_PATH "$lossless_supersample_out" "$lossless_thumbnail_out"
+    $CONVERT_BIN_PATH "$lossless_miff_supersample_out" "$lossless_miff_thumbnail_out"
 done
