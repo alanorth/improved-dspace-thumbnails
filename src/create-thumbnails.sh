@@ -53,7 +53,7 @@ export GHOSTSCRIPT_CMYK_PROFILE_PATH='/usr/share/ghostscript/iccprofiles/default
 # Number of processes to run at a time
 export NUM_CPUS=$(nproc)
 # URL to DSpace server (without /rest)
-DSPACE_URL='https://dspacetest.cgiar.org'
+DSPACE_URL='https://dspace7test.ilri.org'
 
 # Create directories
 mkdir -p data img/im7 results/im7
