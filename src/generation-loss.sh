@@ -37,8 +37,8 @@ GHOSTSCRIPT_CMYK_PROFILE_PATH='/usr/share/ghostscript/iccprofiles/default_cmyk.i
 for pdf_filename in data/*.pdf; do
     # check if PDF uses CMYK colorspace (only used for ImageMagick)
     cmyk="no"
-    identify_output=$($IDENTIFY_BIN_PATH "$pdf_filename"\[0\] 2> /dev/null)
-    if [[ $identify_output =~ CMYK ]]; then
+    identify_output=$($IDENTIFY_BIN_PATH -format "%[colorspace]\n" "$pdf_filename"\[0\] 2> /dev/null)
+    if [[ $identify_output == 'CMYK' ]]; then
         cmyk="yes"
     fi
 
