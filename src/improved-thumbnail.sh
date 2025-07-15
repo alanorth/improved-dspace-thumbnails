@@ -1,5 +1,7 @@
 # Create an "improved" PDF thumbnail by supersampling and forcing ImageMagick
 # to use the PDF CropBox instead of the MediaBox.
+#
+# Note: at the original time of writing this was done using ImageMagick 6.
 
 temp_file=$(mktemp --suffix=.jpg)
 

@@ -93,8 +93,9 @@ for handle in $HANDLES; do
         export cmyk="yes"
     fi
 
-    ./src/dspace-thumbnail.sh # DSpace 6.3 / 7.4 thumbnails
-    ./src/improved-thumbnail.sh # DSpace 7.5
+    # Original analysis from 2022. For use with ImageMagick 6.
+    #./src/dspace-thumbnail.sh # DSpace 6.3 / 7.4 thumbnails
+    #./src/improved-thumbnail.sh # DSpace 7.5
 
     # Experimental things
     #./src/improved-lossless.sh # For comparison using ssimulacra2

@@ -1,6 +1,8 @@
 # Create a "default" DSpace 6.4 / 7.4 PDF thumbnail first. Note that DSpace
 # does this by generating a large image from the PDF and then resizing it in
 # a separate step.
+#
+# Note: at the original time of writing this was done using ImageMagick 6.
 
 temp_file=$(mktemp --suffix=.jpg)
 
