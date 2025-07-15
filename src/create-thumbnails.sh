@@ -97,10 +97,11 @@ for handle in $HANDLES; do
     #./src/dspace-thumbnail.sh # DSpace 6.3 / 7.4 thumbnails
     #./src/improved-thumbnail.sh # DSpace 7.5
 
-    # Experimental things
-    #./src/improved-lossless.sh # For comparison using ssimulacra2
+    # Experimental analysis comparing JPEG, WebP, and AVIF using ImageMagick 7.
+    # Uses ssimulacra2 for an apples-to-apples comparison on quality.
+    ./src/improved-lossless.sh # For comparison using ssimulacra2
 
-    #./src/improved-thumbnail-im7.sh
-    #./src/improved-thumbnail-im7-webp.sh
-    #./src/improved-thumbnail-im7-avif.sh
+    ./src/improved-thumbnail-im7.sh
+    ./src/improved-thumbnail-im7-webp.sh
+    ./src/improved-thumbnail-im7-avif.sh
 done
